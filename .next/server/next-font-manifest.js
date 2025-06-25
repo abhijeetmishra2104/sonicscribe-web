@@ -1,0 +1,1 @@
+self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{"/Users/abhijeetmishra/Developer/Projects/sonicscribe-web/web-app/src/app/layout":["static/media/e4af272ccee01ff0-s.p.woff2","static/media/97ac91773d3121b2-s.p.woff2"]},"appUsingSizeAdjust":true,"pagesUsingSizeAdjust":false}';

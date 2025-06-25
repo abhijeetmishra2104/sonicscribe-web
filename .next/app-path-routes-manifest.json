@@ -1,0 +1,16 @@
+{
+  "/api/auth/signup/route": "/api/auth/signup",
+  "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
+  "/api/auth/signin/route": "/api/auth/signin",
+  "/api/risk-prediction/route": "/api/risk-prediction",
+  "/api/upload/route": "/api/upload",
+  "/api/symptom-upload/route": "/api/symptom-upload",
+  "/_not-found/page": "/_not-found",
+  "/favicon.ico/route": "/favicon.ico",
+  "/api/get-uploaded-files/route": "/api/get-uploaded-files",
+  "/page": "/",
+  "/auth/signin/page": "/auth/signin",
+  "/auth/signup/page": "/auth/signup",
+  "/upload/page": "/upload",
+  "/uploaded-files/page": "/uploaded-files"
+}
