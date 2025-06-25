@@ -1,5 +1,3 @@
-// app/api/risk-prediction/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -13,6 +11,12 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify(body),
     });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error('Flask error response:', text);
+      return NextResponse.json({ error: 'Flask server error', detail: text }, { status: 500 });
+    }
 
     const result = await response.json();
     return NextResponse.json(result);
