@@ -58,26 +58,28 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({ url: uploadResult.secure_url }),
     });
 
-    const flaskText = await flaskResponse.text();
+    let aiResult;
 
-    try {
-      const aiResult = JSON.parse(flaskText);
+try {
+  aiResult = await flaskResponse.json(); // Let fetch handle parsing
+} catch (e) {
+  const rawText = await flaskResponse.text();
+  console.error("❌ Failed to parse Flask JSON. Raw response:", rawText);
+  return NextResponse.json({
+    error: "Invalid JSON from Flask",
+    raw: rawText,
+  }, { status: 500 });
+}
 
-      return NextResponse.json({
-        success: true,
-        file: dbRecord,
-        analysis: {
-          transcript: aiResult.transcript,
-          response: aiResult.response,
-        },
-      });
-    } catch (e) {
-      console.error("❌ Failed to parse JSON from Flask. Raw response:", flaskText);
-      return NextResponse.json({
-        error: "Flask response was not valid JSON",
-        raw: flaskText,
-      }, { status: 500 });
-    }
+return NextResponse.json({
+  success: true,
+  file: dbRecord,
+  analysis: {
+    transcript: aiResult.transcript,
+    response: aiResult.response,
+  },
+});
+
   } catch (error) {
     console.error("❌ Unexpected error in POST handler:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

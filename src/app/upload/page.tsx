@@ -429,11 +429,6 @@ function handleSymptomTextChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     {risk !== null && !loading && <PredictionResultCard risk={risk} decision={decision} />}
   </div>
 )}
-
-
-
-
-
       {selectedFeature === 'documentation' && (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6 relative">
           <h1 className="text-3xl font-bold mb-10">Upload your Audio File</h1>
