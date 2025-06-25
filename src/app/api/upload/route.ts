@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
   });
 
   // 🔥 Send the Cloudinary URL to Flask app
-  const flaskResponse = await fetch('http://flask-app1:8080/process-audio-url', {
+  const flaskResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/analyze-note`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ url: result.secure_url }),

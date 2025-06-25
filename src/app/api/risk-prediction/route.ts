@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    const response = await fetch('http://flask-app4:5002/api/predict', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/predict`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
