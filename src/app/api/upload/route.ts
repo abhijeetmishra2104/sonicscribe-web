@@ -15,17 +15,18 @@ cloudinary.config({
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-    const file = formData.get('file') as File;
+    const file = formData.get('file') as File | null;
 
     if (!file) {
-      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'No file uploaded' }, { status: 400 });
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const stream = Readable.from(buffer);
 
+    // Upload to Cloudinary
     const uploadResult = await new Promise<UploadApiResponse>((resolve, reject) => {
-      const streamUpload = cloudinary.uploader.upload_stream(
+      const uploadStream = cloudinary.uploader.upload_stream(
         {
           resource_type: 'auto',
           folder: 'audio-uploads',
@@ -35,9 +36,10 @@ export async function POST(req: NextRequest) {
           resolve(result);
         }
       );
-      stream.pipe(streamUpload);
+      stream.pipe(uploadStream);
     });
 
+    // Save to Prisma DB
     const dbRecord = await prisma.audioFile.create({
       data: {
         url: uploadResult.secure_url,
@@ -47,27 +49,36 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Send Cloudinary URL to Flask
+    // Send Cloudinary URL to Flask API
     const flaskResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/analyze-note`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: uploadResult.secure_url }),
     });
 
-    const text = await flaskResponse.text();
+    const raw = await flaskResponse.text();
+
     try {
-      const aiResult = JSON.parse(text);
+      const parsed = JSON.parse(raw);
       return NextResponse.json({
         success: true,
         file: dbRecord,
-        analysis: aiResult,
+        analysis: typeof parsed.result === 'string' ? parsed.result : JSON.stringify(parsed.result),
       });
     } catch (e) {
-      console.error("❌ JSON parsing failed. Raw response:", text);
-      return NextResponse.json({ error: "Flask response not JSON", raw: text }, { status: 500 });
+      console.error("❌ Failed to parse Flask JSON response:", raw);
+      return NextResponse.json({
+        success: false,
+        error: "Invalid response from AI analysis service",
+        raw,
+      }, { status: 500 });
     }
+
   } catch (error) {
     console.error("❌ Unexpected error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({
+      success: false,
+      error: "Internal Server Error",
+    }, { status: 500 });
   }
 }
