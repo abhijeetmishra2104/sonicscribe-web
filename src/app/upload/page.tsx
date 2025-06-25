@@ -84,7 +84,7 @@ export default function UploadPage() {
 
       if (data.success) {
         setShowAlert(true);
-        setAnalysis(data.analysis || null); // capture AI output
+        setAnalysis(data.analysis?.response || null); 
       }
     } catch (err) {
       console.error("Upload failed", err);

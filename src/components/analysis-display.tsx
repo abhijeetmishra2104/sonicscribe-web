@@ -109,7 +109,7 @@ export default function AnalysisDisplay({ analysis }: AnalysisDisplayProps) {
   }
 
   const data = parseAnalysis(analysis)
-  console.log("Parsed data:", data)
+
 
   // Calculate risk level based on text
   const getRiskLevel = () => {
