@@ -25,9 +25,6 @@ export async function POST(req: NextRequest) {
 
     const data = await response.json();
 
-    console.log("Flask response status:", response.status);
-    console.log("Flask response body:", data);
-
     if (data.response) {
       return NextResponse.json({ success: true, result: data.response.trim(), transcript: data.transcript || null });
     } else {
