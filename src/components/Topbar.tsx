@@ -11,6 +11,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import GetStartedButton  from '@/components/ui/get-started-button';
 
 export function TopBar() {
   const { data: session } = useSession();
@@ -19,8 +20,8 @@ export function TopBar() {
 
   const navItems = [
     { name: 'Features', href: '#features' },
-    { name: 'Pricing', href: '#pricing' },
     { name: 'About', href: '#about' },
+    { name: 'Pricing', href: '#pricing' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -56,18 +57,18 @@ export function TopBar() {
             {session ? (
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
-                  <Avatar.Root className="w-8 h-8 rounded-full bg-purple-500 cursor-pointer flex items-center justify-center">
-                    <Avatar.Fallback className="text-white font-medium">
+                  <Avatar.Root className="w-10 h-10 rounded-full bg-[#40A2D8] text-[#F0EDCF] font-extrabold text-2xl cursor-pointer flex items-center justify-center">
+                    <Avatar.Fallback className="text-balck font-medium">
                       {(session.user?.name || 'U')[0].toUpperCase()}
                     </Avatar.Fallback>
                   </Avatar.Root>
                 </DropdownMenu.Trigger>
-                <DropdownMenu.Content className="bg-gray-900 text-white rounded shadow p-2 mt-2">
+                <DropdownMenu.Content className="bg-[#FDFFE2] font-extrabold text-black rounded shadow p-2 mt-2">
                   <DropdownMenu.Item
                     onClick={() => signOut()}
-                    className="cursor-pointer hover:bg-gray-800 px-2 py-1"
+                    className="cursor-pointer hover:bg-[#83B4FF] px-2 py-1"
                   >
-                    Sign Out
+                    Log Out
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
               </DropdownMenu.Root>
@@ -81,9 +82,7 @@ export function TopBar() {
               </Button>
             )}
             <Link href="/upload">
-              <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded cursor-pointer">
-                Get Started
-              </button>
+              <GetStartedButton/>
             </Link>
           </div>
 

@@ -15,8 +15,8 @@ export default function Home() {
         <TopBar />
         <HeroSection />
         <FeatureCards />
-        <Contact />
         <PricingSection />
+        <Contact />
         <TestimonialSection />
         <Footer />
       </div>

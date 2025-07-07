@@ -11,13 +11,13 @@ export default function Footer() {
         </div>
         <Separator className="md:hidden" />
         <div className="flex gap-4">
-          <a href="https://github.com/your-repo" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/abhijeetmishra2104/SonicScribe" target="_blank" rel="noopener noreferrer">
             <Github className="h-5 w-5 hover:text-foreground transition-colors" />
           </a>
-          <a href="https://twitter.com/your-handle" target="_blank" rel="noopener noreferrer">
+          <a href="https://x.com/AbhijeetMi53781" target="_blank" rel="noopener noreferrer">
             <Twitter className="h-5 w-5 hover:text-foreground transition-colors" />
           </a>
-          <a href="mailto:contact@yourdomain.com">
+          <a href="abhijeetmishra2104@gmail.com">
             <Mail className="h-5 w-5 hover:text-foreground transition-colors" />
           </a>
         </div>

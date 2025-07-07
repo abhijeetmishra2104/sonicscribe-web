@@ -1,11 +1,9 @@
 "use client"
 import type React from "react"
 import { WobbleCard } from "./ui/wobble-card"
-import { Zap, Shield, Rocket, NotepadText, Stethoscope, ShieldCheck } from "lucide-react"
 import Image from "next/image"
 import { ColourfulText } from "./ui/colourful-text"
 import { ContainerScroll } from "./ui/feature-card-scroll-animation"
-import { LampContainer } from "./ui/Lamp"
 
 type FeatureProps = {
   title: string
@@ -28,7 +26,7 @@ const Feature = ({
 }: FeatureProps) => {
   return (
     <WobbleCard containerClassName={`${bgColor} h-full ${className}`}>
-      <div className="flex flex-col h-full">
+      <div id="features" className="flex flex-col h-full">
         <div className="flex-1">
           {icon && <div className="mb-6 text-white/80">{icon}</div>}
           <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">{title}</h3>
@@ -70,7 +68,9 @@ export function FeatureCards() {
           <p className="text-gray-600 text-lg font-inter">
             SonicScript AI helps teams move fast, build efficiently, and scale across platforms with confidence.
           </p>
-          <button className="mt-4 px-6 py-3 bg-blue-700 text-white rounded-xl shadow hover:bg-blue-800 transition font-inter">
+          <button onClick={() => {
+            window.location.href = "/upload"
+          }} className="mt-4 px-6 py-3 bg-blue-700 text-white rounded-xl shadow hover:bg-blue-800 transition font-inter">
             Get Started
           </button>
         </div>
@@ -81,19 +81,19 @@ export function FeatureCards() {
             title="Smart Symptom Checker"
             description="Analyze symptoms, prioritize care, and connect patients to the right doctors using an AI-powered virtual assistant."
             bgColor="bg-gradient-to-br from-pink-600 to-pink-800"
-            icon={<Stethoscope size={32} />}
+            icon={<img src="/symptom-checker.png" alt="Symptom Icon" className="w-28" />}
           />
           <Feature
             title="Predictive Risk Insights"
             description="Forecast readmissions and calculate personalized risk scores with intelligent predictive models."
             bgColor="bg-gradient-to-br from-purple-600 to-purple-800"
-            icon={<ShieldCheck size={32} />}
+            icon={<img src="/risk-prediction.png" alt="Predictive Icon" className="w-28" />}
           />
           <Feature
             title="Auto Clinical Notes with NLP"
             description="Generate accurate clinical documentation in real-time using voice recognition and natural language processing."
             bgColor="bg-gradient-to-br from-blue-600 to-blue-800"
-            icon={<NotepadText size={32} />}
+            icon={<img src="/notes.png" alt="Note Icon" className="w-28"/>}
             className="md:col-span-2"
           />
         </div>
