@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -25,6 +25,15 @@ export function TopBar() {
     { name: 'Contact', href: '#contact' },
   ];
 
+  const [showGetStartedButton, setShowGetStartedButton] = useState(true);
+  useEffect( () => {
+    if(window.location.pathname === '/upload') {
+      setShowGetStartedButton(false);
+    } else {
+      setShowGetStartedButton(true);
+    }
+  })
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-gray-800/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -35,7 +44,7 @@ export function TopBar() {
               <Zap className="h-8 w-8 text-[#64ffda]" />
               <div className="absolute inset-0 h-8 w-8 bg-gradient-to-r from-blue-400 to-purple-500 opacity-20 blur-sm" />
             </div>
-            <span className="text-xl font-bold text-[#64ffda]">SonicScribe AI</span>
+            <span className="text-xl font-bold text-[#64ffda]"><Link href={"/"}>SonicScribe AI</Link></span>
           </div>
 
           {/* Desktop Navigation */}
@@ -76,14 +85,16 @@ export function TopBar() {
               <Button
                 variant="ghost"
                 onClick={() => router.push("/auth/signin")}
-                className="text-gray-300 hover:text-white hover:bg-gray-800/50"
+                className="bg-blue-700 text-white hover:text-whilte hover:bg-blue-800 transition-colors duration-200"
               >
                 Sign In
               </Button>
             )}
-            <Link href="/upload">
+            {showGetStartedButton && (
+              <Link href="/upload">
               <GetStartedButton/>
             </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
