@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import GetStartedButton  from '@/components/ui/get-started-button';
 
 export function TopBar() {
   const { data: session } = useSession();
@@ -19,10 +20,19 @@ export function TopBar() {
 
   const navItems = [
     { name: 'Features', href: '#features' },
-    { name: 'Pricing', href: '#pricing' },
     { name: 'About', href: '#about' },
+    { name: 'Pricing', href: '#pricing' },
     { name: 'Contact', href: '#contact' },
   ];
+
+  const [showGetStartedButton, setShowGetStartedButton] = useState(true);
+  useEffect( () => {
+    if(window.location.pathname === '/upload') {
+      setShowGetStartedButton(false);
+    } else {
+      setShowGetStartedButton(true);
+    }
+  })
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-gray-800/50">
@@ -34,12 +44,12 @@ export function TopBar() {
               <Zap className="h-8 w-8 text-[#64ffda]" />
               <div className="absolute inset-0 h-8 w-8 bg-gradient-to-r from-blue-400 to-purple-500 opacity-20 blur-sm" />
             </div>
-            <span className="text-xl font-bold text-[#64ffda]">SonicScribe AI</span>
+            <span className="text-xl font-bold text-[#64ffda]"><Link href={"/"}>SonicScribe AI</Link></span>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
+            {showGetStartedButton && navItems.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
@@ -56,18 +66,18 @@ export function TopBar() {
             {session ? (
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
-                  <Avatar.Root className="w-8 h-8 rounded-full bg-purple-500 cursor-pointer flex items-center justify-center">
-                    <Avatar.Fallback className="text-white font-medium">
+                  <Avatar.Root className="w-10 h-10 rounded-full bg-[#40A2D8] text-[#F0EDCF] font-extrabold text-2xl cursor-pointer flex items-center justify-center">
+                    <Avatar.Fallback className="text-balck font-medium">
                       {(session.user?.name || 'U')[0].toUpperCase()}
                     </Avatar.Fallback>
                   </Avatar.Root>
                 </DropdownMenu.Trigger>
-                <DropdownMenu.Content className="bg-gray-900 text-white rounded shadow p-2 mt-2">
+                <DropdownMenu.Content className="bg-[#FDFFE2] font-extrabold text-black rounded shadow p-2 mt-2">
                   <DropdownMenu.Item
                     onClick={() => signOut()}
-                    className="cursor-pointer hover:bg-gray-800 px-2 py-1"
+                    className="cursor-pointer hover:bg-[#83B4FF] px-2 py-1"
                   >
-                    Sign Out
+                    Log Out
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
               </DropdownMenu.Root>
@@ -75,16 +85,16 @@ export function TopBar() {
               <Button
                 variant="ghost"
                 onClick={() => router.push("/auth/signin")}
-                className="text-gray-300 hover:text-white hover:bg-gray-800/50"
+                className="bg-blue-700 text-white hover:text-whilte hover:bg-blue-800 transition-colors duration-200"
               >
                 Sign In
               </Button>
             )}
-            <Link href="/upload">
-              <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded cursor-pointer">
-                Get Started
-              </button>
+            {showGetStartedButton && (
+              <Link href="/upload">
+              <GetStartedButton/>
             </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}

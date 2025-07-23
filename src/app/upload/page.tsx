@@ -23,6 +23,7 @@ import {
 import { MedicalAnalysisCard } from '@/components/symptom-result';
 import { PredictionResultCard } from '@/components/risk-prediction-result';
 import AnalysisDisplay from '@/components/analysis-display';
+import { TopBar } from '@/components/Topbar';
 
 const loadingStates = [
   { text: "Reading audio file..." },
@@ -215,10 +216,11 @@ function handleSymptomTextChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
   const [risk, setRisk] = useState<number | null>(null);
   const [decision, setDecision] = useState<string | null>(null);
   return (
+    <>
+      <TopBar />
     <div className="min-h-screen bg-black text-inter text-white pt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold mb-6 text-center">SonicScribe AI</h1>
-        <p className="text-center text-gray-400 mb-10">
+        <p className="text-center text-gray-400 my-10">
           Choose a feature to get started with AI-powered healthcare solutions.
         </p>
       </div>
@@ -431,7 +433,6 @@ function handleSymptomTextChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
 )}
       {selectedFeature === 'documentation' && (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6 relative">
-          <h1 className="text-3xl font-bold mb-10">Upload your Audio File</h1>
 
           <div className="w-full max-w-2xl">
             <FileUpload onChange={handleUpload} />
@@ -471,5 +472,6 @@ function handleSymptomTextChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
         </div>
       )}
     </div>
+    </>
   );
 }

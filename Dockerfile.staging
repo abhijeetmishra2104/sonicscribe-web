@@ -1,0 +1,36 @@
+# Use official Node.js image
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install OS packages needed for Prisma's binary
+RUN apk add --no-cache openssl
+
+# Copy Prisma schema FIRST (needed for `prisma generate`)
+COPY prisma ./prisma
+
+# Copy package.json and lock file
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Copy rest of the app
+COPY . .
+
+# Build the Next.js app for production
+RUN npm run build
+
+# Optional: apply Prisma migrations on start
+# (Optional, only if you're sure)
+RUN npx prisma migrate deploy
+
+# Expose the app port
+EXPOSE 3000
+
+# Run the app in production mode
+CMD ["npm", "start"]

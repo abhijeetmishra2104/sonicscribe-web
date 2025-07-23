@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  web-app-staging:
+    build:
+      context: .
+      dockerfile: Dockerfile.staging
+    ports:
+      - "3001:3000"
+    env_file:
+      - .env.staging
+    depends_on:
+      - postgres-staging
+
+  postgres-staging:
+    image: postgres:15
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: staging_db
+      POSTGRES_USER: abhi
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata-staging:/var/lib/postgresql/data
+
+volumes:
+  pgdata-staging:

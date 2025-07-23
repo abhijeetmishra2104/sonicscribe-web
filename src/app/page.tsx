@@ -6,7 +6,6 @@ import { TestimonialSection } from "@/components/TestimonialSection";
 import  Contact  from "@/components/Contact";
 import  PricingSection  from "@/components/PricingSection";
 import  Footer  from "@/components/Footer";
-import { LampContainer } from "@/components/ui/Lamp";
 
 
 export default function Home() {
@@ -15,8 +14,8 @@ export default function Home() {
         <TopBar />
         <HeroSection />
         <FeatureCards />
-        <Contact />
         <PricingSection />
+        <Contact />
         <TestimonialSection />
         <Footer />
       </div>
