@@ -1,37 +1,26 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { AlertTriangle, Stethoscope, UserCheck, Info, Activity } from "lucide-react";
-import ReactMarkdown from "react-markdown";
+import { Stethoscope, Activity } from "lucide-react";
+import React from "react";
 
 interface MedicalAnalysisCardProps {
-  analysis: string;
+  analysis: string; // Now a JSON string
 }
 
 export function MedicalAnalysisCard({ analysis }: MedicalAnalysisCardProps) {
-  const parseAnalysis = (text: string) => {
-    const triageMatch = text.match(/Triage Level:?[\s\n]*([\s\S]*?)(?=\n|$)/i);
-    const specialistMatch = text.match(/Specialist to Consult:?[\s\n]*([\s\S]*?)(?=\n|$)/i);
-    const disclaimerMatch = text.match(/(Disclaimer|Please remember.*?)$/is);
+  let parsedData: {
+    advice?: string;
+    probable_conditions?: string[];
+    specialist_to_consult?: string;
+    triage_level?: string;
+  } = {};
 
-    const triageLevel = triageMatch?.[1]?.replace(/^\*+/, "").trim() || "";
-    const specialist = specialistMatch?.[1]?.replace(/^\*+/, "").trim() || "";
-    const disclaimer = disclaimerMatch?.[0]?.trim() || "";
-
-    let mainText = text;
-    if (triageMatch) mainText = mainText.replace(triageMatch[0], "");
-    if (specialistMatch) mainText = mainText.replace(specialistMatch[0], "");
-    if (disclaimerMatch) mainText = mainText.replace(disclaimerMatch[0], "");
-
-    return {
-      mainAnalysis: mainText.trim().replace(/\n{2,}/g, "\n"),
-      triageLevel,
-      specialist,
-      disclaimer
-    };
-  };
-
-  const parsed = parseAnalysis(analysis);
+  try {
+    parsedData = JSON.parse(analysis);
+  } catch (err) {
+    console.error("Failed to parse analysis:", err);
+  }
 
   const getTriageColor = (level: string) => {
     const l = level.toLowerCase();
@@ -52,7 +41,7 @@ export function MedicalAnalysisCard({ analysis }: MedicalAnalysisCardProps) {
         </div>
       </div>
 
-      {parsed.mainAnalysis && (
+      {parsedData.probable_conditions && parsedData.probable_conditions.length > 0 && (
         <Card className="bg-gray-900/50 border border-gray-700/50 backdrop-blur-sm">
           <CardContent className="p-6 space-y-4">
             <div className="flex items-center gap-3">
@@ -61,53 +50,61 @@ export function MedicalAnalysisCard({ analysis }: MedicalAnalysisCardProps) {
               </div>
               <h3 className="text-2xl font-heading font-semibold text-white">Probable Conditions</h3>
             </div>
-            <div className="text-gray-300 font-body text-lg leading-relaxed whitespace-pre-line">
-              <ReactMarkdown>{parsed.mainAnalysis}</ReactMarkdown>
-            </div>
+            <ul className="text-gray-300 font-body text-lg leading-relaxed list-disc pl-5">
+              {parsedData.probable_conditions.map((condition, index) => (
+                <li key={index}>{condition}</li>
+              ))}
+            </ul>
           </CardContent>
         </Card>
       )}
 
       <div className="grid md:grid-cols-2 gap-4">
-        {parsed.triageLevel && (
+        {parsedData.triage_level && (
           <Card className="bg-gray-900/50 border border-gray-700/50 backdrop-blur-sm">
             <CardContent className="p-6 space-y-2">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-orange-500/20 border border-orange-500/30">
-                  <img src="/alert.png" alt="Alert Icon" className="h-12 w-12"/>
+                  <img src="/alert.png" alt="Alert Icon" className="h-12 w-12" />
                 </div>
                 <h3 className="text-2xl font-semibold text-white">Triage Level</h3>
               </div>
-              <p className={cn(getTriageColor(parsed.triageLevel), "rounded-md px-3 py-2 text-lg font-medium break-words whitespace-pre-wrap")}>{parsed.triageLevel}</p>
+              <p className={cn(getTriageColor(parsedData.triage_level), "rounded-md px-3 py-2 text-lg font-medium break-words whitespace-pre-wrap")}>
+                {parsedData.triage_level}
+              </p>
             </CardContent>
           </Card>
         )}
 
-        {parsed.specialist && (
+        {parsedData.specialist_to_consult && (
           <Card className="bg-gray-900/50 border border-gray-700/50 backdrop-blur-sm">
             <CardContent className="p-6 space-y-2">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-green-500/20 border border-green-500/30">
-                  <img src={"/doctor.png"} alt="Doctor Icon" className="h-12 w-12"/>
+                  <img src={"/doctor.png"} alt="Doctor Icon" className="h-12 w-12" />
                 </div>
                 <h3 className="text-2xl font-semibold text-white">Recommended Specialist</h3>
               </div>
-              <p className="text-gray-300 text-lg leading-relaxed break-words whitespace-pre-wrap">{parsed.specialist}</p>
+              <p className="text-gray-300 text-lg leading-relaxed break-words whitespace-pre-wrap">
+                {parsedData.specialist_to_consult}
+              </p>
             </CardContent>
           </Card>
         )}
       </div>
 
-      {parsed.disclaimer && (
+      {parsedData.advice && (
         <Card className="bg-amber-500/5 border border-amber-500/20 backdrop-blur-sm">
           <CardContent className="p-6 space-y-2">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-amber-500/20 border border-amber-500/30">
-                <img src={"/info.png"} alt="Info icon" className="h-12 w-12"/>
+                <img src={"/info.png"} alt="Info icon" className="h-12 w-12" />
               </div>
               <h3 className="text-2xl font-semibold text-amber-200">Disclaimer</h3>
             </div>
-            <p className="text-amber-100/80 text-lg leading-relaxed whitespace-pre-wrap">{parsed.disclaimer}</p>
+            <p className="text-amber-100/80 text-lg leading-relaxed whitespace-pre-wrap">
+              {parsedData.advice}
+            </p>
           </CardContent>
         </Card>
       )}

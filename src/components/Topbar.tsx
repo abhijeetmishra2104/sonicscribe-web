@@ -49,7 +49,7 @@ export function TopBar() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
+            {showGetStartedButton && navItems.map((item) => (
               <a
                 key={item.name}
                 href={item.href}

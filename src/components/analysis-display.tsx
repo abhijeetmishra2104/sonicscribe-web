@@ -42,8 +42,27 @@ const medicalTerms: Record<string, string> = {
   Indigestion: "Discomfort or pain in the upper abdomen often occurring after eating.",
 }
 
+const handlePrint = () => {
+  window.print();
+}
+
+const handleShare = async () => {
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: 'SonicScribe Analysis',
+        text: 'Check out this AI medical analysis from SonicScribe!',
+        url: window.location.href,
+      });
+    } else {
+      alert('Share not supported on this browser');
+    }
+  } catch (err) {
+    console.error('Error sharing:', err);
+  }
+};
+
 export default function AnalysisDisplay({ analysis }: AnalysisDisplayProps) {
-  console.log("Raw analysis data:", analysis)
   const [activeTab, setActiveTab] = useState("overview")
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     patientInfo: true,
@@ -103,8 +122,6 @@ export default function AnalysisDisplay({ analysis }: AnalysisDisplayProps) {
         }
       })
     }
-
-    console.log("Parsed data:", parsed)
     return parsed
   }
 
@@ -173,8 +190,29 @@ export default function AnalysisDisplay({ analysis }: AnalysisDisplayProps) {
       )
     })
   }
+  const handleDownloadPDF = async () => {
+    try {
+      const res = await fetch("/api/pdf", {
+        method: "POST",
+        body: JSON.stringify({ analysis }),
+        headers: { "Content-Type": "application/json" },
+      });
 
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "sonicscribe-analysis.pdf";
+      a.click();
+      a.remove();
+    } catch (err) {
+      console.error("Failed to generate PDF", err);
+    }
+  };
+  
   return (
+    analysis && (
     <div className="mt-10 w-full max-w-4xl space-y-6">
       {/* Header with Actions */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -192,7 +230,7 @@ export default function AnalysisDisplay({ analysis }: AnalysisDisplayProps) {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" className="bg-gray-800 border-gray-700 hover:bg-gray-700">
+                <Button onClick={handlePrint} variant="outline" size="icon" className="bg-gray-800 border-gray-700 hover:bg-gray-700">
                   <Printer className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -205,7 +243,7 @@ export default function AnalysisDisplay({ analysis }: AnalysisDisplayProps) {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" className="bg-gray-800 border-gray-700 hover:bg-gray-700">
+                <Button onClick={handleDownloadPDF} variant="outline" size="icon" className="bg-gray-800 border-gray-700 hover:bg-gray-700">
                   <Download className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -218,7 +256,7 @@ export default function AnalysisDisplay({ analysis }: AnalysisDisplayProps) {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" className="bg-gray-800 border-gray-700 hover:bg-gray-700">
+                <Button onClick={handleShare} variant="outline" size="icon" className="bg-gray-800 border-gray-700 hover:bg-gray-700">
                   <Share2 className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -242,6 +280,7 @@ export default function AnalysisDisplay({ analysis }: AnalysisDisplayProps) {
         </TabsList>
 
         {/* Overview Tab */}
+        <div id='analysis-content'>
         <TabsContent value="overview" className="space-y-6 mt-4">
           {/* Patient Information */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
@@ -569,12 +608,14 @@ export default function AnalysisDisplay({ analysis }: AnalysisDisplayProps) {
                 </Button>
               </div>
               <div className="bg-gray-800/80 p-4 rounded-lg border border-gray-700/50 font-mono text-sm whitespace-pre-wrap">
-                <ReactMarkdown>{analysis}</ReactMarkdown>
+                <ReactMarkdown>{}</ReactMarkdown>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
+        </div>
       </Tabs>
     </div>
+  )
   )
 }

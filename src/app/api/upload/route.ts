@@ -58,27 +58,36 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({ url: uploadResult.secure_url }),
     });
 
-    let aiResult;
+    let flaskData;
+    try {
+      flaskData = await flaskResponse.json();
+    } catch (e) {
+      const rawText = await flaskResponse.text();
+      console.error("❌ Failed to parse Flask JSON. Raw response:", rawText);
+      return NextResponse.json({
+        error: "Invalid JSON from Flask",
+        raw: rawText,
+      }, { status: 500 });
+    }
 
-try {
-  aiResult = await flaskResponse.json(); // Let fetch handle parsing
-} catch (e) {
-  const rawText = await flaskResponse.text();
-  console.error("❌ Failed to parse Flask JSON. Raw response:", rawText);
-  return NextResponse.json({
-    error: "Invalid JSON from Flask",
-    raw: rawText,
-  }, { status: 500 });
-}
+    if (!flaskData.success) {
+      return NextResponse.json({
+        error: flaskData.error || "Flask backend failed",
+      }, { status: 500 });
+    }
 
-return NextResponse.json({
-  success: true,
-  file: dbRecord,
-  analysis: {
-    transcript: aiResult.transcript,
-    response: aiResult.response,
-  },
-});
+    // Extract structured response
+    const { transcript, structured, triage } = flaskData.analysis;
+
+    return NextResponse.json({
+      success: true,
+      file: dbRecord,
+      analysis: {
+        transcript,
+        structured, // structured fields like name, age, symptoms, etc.
+        triage,     // optional triage info if provided
+      },
+    });
 
   } catch (error) {
     console.error("❌ Unexpected error in POST handler:", error);
