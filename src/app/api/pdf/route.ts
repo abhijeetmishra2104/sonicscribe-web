@@ -1,34 +1,33 @@
-// app/api/pdf/route.ts
 import { NextRequest } from "next/server";
 import os from "os";
 
 let puppeteer: any;
-let executablePath: string;
-let args: string[];
+let launchOptions: any;
 
 if (os.platform() === "darwin" || os.platform() === "linux" || os.platform() === "win32") {
-  // Local development (macOS, Linux, Windows)
   puppeteer = await import("puppeteer");
-  executablePath = undefined; // Puppeteer will use its own Chromium
-  args = ["--no-sandbox", "--disable-setuid-sandbox"];
+  launchOptions = {
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    defaultViewport: { width: 1200, height: 800 },
+  };
 } else {
-  // Vercel / production
-  const chromium = await import("@sparticuz/chromium");
+  const chromium = (await import("@sparticuz/chromium")).default;
   puppeteer = await import("puppeteer-core");
-  executablePath = await chromium.executablePath();
-  args = chromium.args;
+  launchOptions = {
+    headless: true,
+    executablePath: await chromium.executablePath(),
+    args: chromium.args,
+    defaultViewport: { width: 1200, height: 800 },
+  };
 }
+
 
 export async function POST(req: NextRequest) {
   const { analysis } = await req.json();
   const analysisEncoded = encodeURIComponent(analysis);
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    executablePath,
-    args,
-    defaultViewport: { width: 1200, height: 800 },
-  });
+  const browser = await puppeteer.launch(launchOptions);
 
   const page = await browser.newPage();
   await page.goto(`${process.env.NEXT_PUBLIC_BASE_URL}/pdf/preview?analysis=${analysisEncoded}`, {

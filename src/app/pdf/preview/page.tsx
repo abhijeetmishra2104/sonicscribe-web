@@ -1,11 +1,16 @@
-// app/pdf/preview/page.tsx
-
 import AnalysisDisplay from "../../../components/analysis-display";
 
-export const dynamic = "force-dynamic"; // Always generate fresh version
+export const dynamic = "force-dynamic";
 
-export default function PDFPreview({ searchParams }: { searchParams: { analysis: string } }) {
-  const analysis = decodeURIComponent(searchParams.analysis || "");
+// New type for Next.js 15+
+type PageProps = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export default async function PDFPreview({ searchParams }: PageProps) {
+  const searchParamsObj = await searchParams;
+  const encoded = searchParamsObj?.analysis?.toString() || "";
+  const analysis = decodeURIComponent(encoded);
 
   return (
     <div className="p-10 bg-black text-white min-h-screen">
