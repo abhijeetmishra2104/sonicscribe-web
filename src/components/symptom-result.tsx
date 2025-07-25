@@ -1,33 +1,31 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { Stethoscope, Activity } from "lucide-react";
-import React from "react";
+import { Card, CardContent } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
+import { Stethoscope, Activity } from "lucide-react"
 
 interface MedicalAnalysisCardProps {
-  analysis: string; // Now a JSON string
+  analysis: string // Now a JSON string
 }
 
 export function MedicalAnalysisCard({ analysis }: MedicalAnalysisCardProps) {
   let parsedData: {
-    advice?: string;
-    probable_conditions?: string[];
-    specialist_to_consult?: string;
-    triage_level?: string;
-  } = {};
+    advice?: string
+    probable_conditions?: string[]
+    specialist_to_consult?: string
+    triage_level?: string
+  } = {}
 
   try {
-    parsedData = JSON.parse(analysis);
+    parsedData = JSON.parse(analysis)
   } catch (err) {
-    console.error("Failed to parse analysis:", err);
+    console.error("Failed to parse analysis:", err)
   }
 
   const getTriageColor = (level: string) => {
-    const l = level.toLowerCase();
-    if (l.includes("emergency")) return "bg-red-500/20 text-red-400 border-red-500/30";
-    if (l.includes("urgent")) return "bg-orange-500/20 text-orange-400 border-orange-500/30";
-    return "bg-green-500/20 text-green-400 border-green-500/30";
-  };
+    const l = level.toLowerCase()
+    if (l.includes("emergency")) return "bg-red-500/20 text-red-400 border-red-500/30"
+    if (l.includes("urgent")) return "bg-orange-500/20 text-orange-400 border-orange-500/30"
+    return "bg-green-500/20 text-green-400 border-green-500/30"
+  }
 
   return (
     <div className="mt-10 w-full max-w-4xl space-y-6 pb-20 bg-black">
@@ -37,7 +35,9 @@ export function MedicalAnalysisCard({ analysis }: MedicalAnalysisCardProps) {
         </div>
         <div>
           <h2 className="text-2xl font-heading font-bold text-white">AI Symptom Analysis</h2>
-          <p className="text-gray-400 text-sm">This is not a diagnosis. Please consult a licensed medical professional.</p>
+          <p className="text-gray-400 text-sm">
+            This is not a diagnosis. Please consult a licensed medical professional.
+          </p>
         </div>
       </div>
 
@@ -69,7 +69,12 @@ export function MedicalAnalysisCard({ analysis }: MedicalAnalysisCardProps) {
                 </div>
                 <h3 className="text-2xl font-semibold text-white">Triage Level</h3>
               </div>
-              <p className={cn(getTriageColor(parsedData.triage_level), "rounded-md px-3 py-2 text-lg font-medium break-words whitespace-pre-wrap")}>
+              <p
+                className={cn(
+                  getTriageColor(parsedData.triage_level),
+                  "rounded-md px-3 py-2 text-lg font-medium break-words whitespace-pre-wrap",
+                )}
+              >
                 {parsedData.triage_level}
               </p>
             </CardContent>
@@ -102,9 +107,7 @@ export function MedicalAnalysisCard({ analysis }: MedicalAnalysisCardProps) {
               </div>
               <h3 className="text-2xl font-semibold text-amber-200">Disclaimer</h3>
             </div>
-            <p className="text-amber-100/80 text-lg leading-relaxed whitespace-pre-wrap">
-              {parsedData.advice}
-            </p>
+            <p className="text-amber-100/80 text-lg leading-relaxed whitespace-pre-wrap">{parsedData.advice}</p>
           </CardContent>
         </Card>
       )}
@@ -120,5 +123,5 @@ export function MedicalAnalysisCard({ analysis }: MedicalAnalysisCardProps) {
         </button>
       </div>
     </div>
-  );
+  )
 }
