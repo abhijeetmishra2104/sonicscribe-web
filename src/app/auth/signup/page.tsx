@@ -37,6 +37,9 @@ const SignUp = () => {
       }
     } if (res.status === 400) {
       alert("User already exists. Please try a different email.");
+    } else {
+      alert("An error occurred during signup. Please try again later.");
+      console.error("Signup error:", res.statusText);
     }
   };
 
