@@ -227,13 +227,13 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.HTML_CSS_TO_IMAGE_API_KEY}`, // You'll need to get this API key
+        Authorization: `Bearer ${process.env.HTML_CSS_TO_IMAGE_API_KEY}`, 
       },
       body: JSON.stringify({
         html: fullHTML,
         format: "pdf",
-        width: 794, // A4 width in pixels at 96 DPI
-        height: 1123, // A4 height in pixels at 96 DPI
+        width: 794, 
+        height: 1123, 
       }),
     })
 
