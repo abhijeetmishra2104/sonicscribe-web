@@ -181,21 +181,22 @@ export function StructuredAnalysisDisplay({ data }: StructuredAnalysisDisplayPro
 
     const reportHTML = `
       <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Medical Analysis Report - ${analysis.structured.name}</title>
-          <meta charset="UTF-8">
-          <style>
+<html>
+  <head>
+    <title>Medical Analysis Report - ${analysis.structured.name}</title>
+    <meta charset="UTF-8">
+    <style>
             @page {
               margin: 0.75in;
               size: A4;
+              background: #FFF2E0;
             }
             
             body { 
               margin: 0; 
               padding: 20px;
               font-family: Arial, sans-serif; 
-              background: white;
+              background: #FFF2E0;
               color: #333;
               font-size: 12px;
               line-height: 1.5;
@@ -203,7 +204,7 @@ export function StructuredAnalysisDisplay({ data }: StructuredAnalysisDisplayPro
             
             .header {
               text-align: center;
-              border-bottom: 3px solid #2563eb;
+              border-bottom: 3px solid #7469B6;
               padding-bottom: 20px;
               margin-bottom: 30px;
               page-break-after: avoid;
@@ -212,7 +213,7 @@ export function StructuredAnalysisDisplay({ data }: StructuredAnalysisDisplayPro
             .app-name {
               font-size: 28px;
               font-weight: bold;
-              color: #2563eb;
+              color: #7F55B1;
               margin-bottom: 5px;
             }
             
@@ -238,7 +239,7 @@ export function StructuredAnalysisDisplay({ data }: StructuredAnalysisDisplayPro
               color: #1f2937;
               margin-bottom: 10px;
               padding-bottom: 5px;
-              border-bottom: 2px solid #e5e7eb;
+              border-bottom: 2px solid #F0A04B;
               page-break-after: avoid;
             }
             
@@ -250,10 +251,10 @@ export function StructuredAnalysisDisplay({ data }: StructuredAnalysisDisplayPro
             }
             
             .info-item {
-              background: #f9fafb;
+              background: #BDDDE4;
               padding: 15px;
               border-radius: 8px;
-              border-left: 4px solid #2563eb;
+              border-left: 4px solid #727D73;
               break-inside: avoid;
             }
             
@@ -268,11 +269,11 @@ export function StructuredAnalysisDisplay({ data }: StructuredAnalysisDisplayPro
             }
             
             .list-item {
-              background: #f3f4f6;
+              background: #BDDDE4;
               padding: 10px 15px;
               margin-bottom: 8px;
               border-radius: 6px;
-              border-left: 3px solid #6b7280;
+              border-left: 3px solid #727D73;
               break-inside: avoid;
             }
             
@@ -310,7 +311,7 @@ export function StructuredAnalysisDisplay({ data }: StructuredAnalysisDisplayPro
             }
             
             .admission-required {
-              background: #fee2e2;
+              background: #fef3c7;
               color: #991b1b;
               padding: 15px;
               border-radius: 8px;
@@ -360,185 +361,168 @@ export function StructuredAnalysisDisplay({ data }: StructuredAnalysisDisplayPro
             .footer {
               margin-top: 40px;
               padding-top: 20px;
-              border-top: 2px solid #e5e7eb;
+              border-top: 2px solid #7469B6;
               text-align: center;
               color: #6b7280;
               font-size: 12px;
               page-break-inside: avoid;
             }
           </style>
-        </head>
-        <body>
-          <div class="header">
-            <div class="app-name">SonicScribe AI</div>
-            <div class="report-title">Medical Analysis Report</div>
-            <div class="report-date">Generated on ${currentDate}</div>
-          </div>
+  </head>
+  <body>
+    <div class="header">
+      <div class="app-name">SonicScribe AI</div>
+      <div class="report-title">Medical Analysis Report</div>
+      <div class="report-date">Generated on ${currentDate}</div>
+    </div>
 
-          <div class="section">
-            <div class="section-title">Patient Information</div>
-            <div class="patient-info">
-              <div class="info-item">
-                <div class="info-label">Patient Name</div>
-                <div class="info-value">${analysis.structured.name}</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Age & Gender</div>
-                <div class="info-value">${analysis.structured.age_gender}</div>
-              </div>
-            </div>
-          </div>
+    <div class="section">
+      <div class="section-title">Patient Information</div>
+      <div class="patient-info">
+        <div class="info-item">
+          <div class="info-label">Patient Name</div>
+          <div class="info-value">${analysis.structured.name}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Age & Gender</div>
+          <div class="info-value">${analysis.structured.age_gender}</div>
+        </div>
+      </div>
+    </div>
 
-          ${
-            analysis.structured.medical_history.length > 0
-              ? `
-            <div class="section">
-              <div class="section-title">Medical History</div>
-              ${analysis.structured.medical_history
-                .map(
-                  (condition) => `
-                <div class="list-item">• ${condition}</div>
-              `,
-                )
-                .join("")}
-            </div>
-          `
-              : ""
-          }
+    ${
+      analysis.structured.medical_history.length > 0
+        ? `
+    <div class="section">
+      <div class="section-title">Medical History</div>
+      ${analysis.structured.medical_history
+        .map((condition) => `<div class="list-item">• ${condition}</div>`)
+        .join("")}
+    </div>
+    `
+        : ""
+    }
 
-          ${
-            analysis.structured.symptoms.length > 0
-              ? `
-            <div class="section">
-              <div class="section-title">Reported Symptoms</div>
-              <div class="symptoms-grid">
-                ${analysis.structured.symptoms
-                  .map(
-                    (symptom) => `
-                  <div class="list-item">• ${symptom}</div>
-                `,
-                  )
-                  .join("")}
-              </div>
-            </div>
-          `
-              : ""
-          }
+    ${
+      analysis.structured.symptoms.length > 0
+        ? `
+    <div class="section">
+      <div class="section-title">Reported Symptoms</div>
+      <div class="symptoms-grid">
+        ${analysis.structured.symptoms
+          .map((symptom) => `<div class="list-item">• ${symptom}</div>`)
+          .join("")}
+      </div>
+    </div>
+    `
+        : ""
+    }
 
-          <div class="section">
-            <div class="section-title">Triage Assessment</div>
-            <div style="margin-bottom: 15px;">
-              <strong>Priority Level: </strong> 
-              <span class="triage-level ${
-                analysis.triage.triage_level.toLowerCase().includes("urgent")
-                  ? "triage-urgent"
-                  : analysis.triage.triage_level.toLowerCase().includes("emergency")
-                    ? "triage-emergency"
-                    : "triage-normal"
-              }">
-                ${analysis.triage.triage_level}
-              </span>
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-              <strong>Recommended Specialist: </strong>
-              <span>${analysis.triage.specialist_to_consult}</span>
-            </div>
+    <div class="section">
+      <div class="section-title">Triage Assessment</div>
+      <div style="margin-bottom: 15px;">
+        <strong>Priority Level: </strong> 
+        <span class="triage-level ${
+          analysis.triage.triage_level.toLowerCase().includes("urgent")
+            ? "triage-urgent"
+            : analysis.triage.triage_level.toLowerCase().includes("emergency")
+              ? "triage-emergency"
+              : "triage-normal"
+        }">
+          ${analysis.triage.triage_level}
+        </span>
+      </div>
 
-            <div>
-              <strong>Probable Conditions:</strong>
-              ${analysis.triage.probable_conditions
-                .map(
-                  (condition) => `
-                <div class="list-item">• ${condition}</div>
-              `,
-                )
-                .join("")}
-            </div>
-          </div>
+      <div style="margin-bottom: 15px;">
+        <strong>Recommended Specialist: </strong>
+        <span>${analysis.triage.specialist_to_consult}</span>
+      </div>
 
-          <div class="section">
-            <div class="section-title">Risk Assessment</div>
-            <div class="info-item">
-              <div class="info-value">${analysis.structured.risk_prediction}</div>
-            </div>
-          </div>
+      <div>
+        <strong>Probable Conditions:</strong>
+        ${analysis.triage.probable_conditions
+          .map((condition) => `<div class="list-item">• ${condition}</div>`)
+          .join("")}
+      </div>
+    </div>
 
-          ${
-            analysis.structured.possible_disease.length > 0
-              ? `
-            <div class="section">
-              <div class="section-title">Possible Diseases/Conditions</div>
-              <div class="diseases-list">
-                ${analysis.structured.possible_disease
-                  .map(
-                    (disease) => `
-                  <span class="disease-tag">${disease}</span>
-                `,
-                  )
-                  .join("")}
-              </div>
-            </div>
-          `
-              : ""
-          }
+    <div class="section">
+      <div class="section-title">Risk Assessment</div>
+      <div class="info-item">
+        <div class="info-value">${analysis.structured.risk_prediction}</div>
+      </div>
+    </div>
 
-          <div class="section">
-            <div class="section-title">Medical Recommendations</div>
-            
-            ${
-              analysis.structured.recommendation.should_be_admitted
-                ? `
-              <div class="admission-required">
-                ⚠️ HOSPITAL ADMISSION RECOMMENDED
-              </div>
-            `
-                : ""
-            }
-            
-            <div class="info-item">
-              <div class="info-label">Next Steps</div>
-              <div class="info-value">${analysis.structured.recommendation.next_steps}</div>
-            </div>
+    ${
+      analysis.structured.possible_disease.length > 0
+        ? `
+    <div class="section">
+      <div class="section-title">Possible Diseases/Conditions</div>
+      <div class="diseases-list">
+        ${analysis.structured.possible_disease
+          .map((disease) => `<span class="disease-tag">${disease}</span>`)
+          .join("")}
+      </div>
+    </div>
+    `
+        : ""
+    }
 
-            ${
-              analysis.structured.notes
-                ? `
-              <div class="info-item" style="margin-top: 15px;">
-                <div class="info-label">Clinical Notes</div>
-                <div class="info-value">${analysis.structured.notes}</div>
-              </div>
-            `
-                : ""
-            }
-          </div>
+    <div class="section">
+      <div class="section-title">Medical Recommendations</div>
 
-          <div class="section">
-            <div class="section-title">Source Information</div>
-            <div class="info-item">
-              <div class="info-label">Audio File</div>
-              <div class="info-value">${file.originalName}</div>
-            </div>
-            <div class="info-item" style="margin-top: 10px;">
-              <div class="info-label">Upload Date</div>
-              <div class="info-value">${new Date(file.uploadedAt).toLocaleString()}</div>
-            </div>
-          </div>
+      ${
+        analysis.structured.recommendation.should_be_admitted
+          ? `<div class="admission-required">
+              ⚠️ HOSPITAL ADMISSION RECOMMENDED
+            </div>`
+          : ""
+      }
 
-          <div class="disclaimer">
-            <div class="disclaimer-title">⚠️ IMPORTANT MEDICAL DISCLAIMER</div>
-            <div class="disclaimer-text">
-              This AI-generated analysis is for informational purposes only and should not be considered as professional medical advice, diagnosis, or treatment. 
-              Always consult with qualified healthcare professionals for proper medical evaluation and care. ${analysis.triage.advice}
-            </div>
-          </div>
+      <div class="info-item">
+        <div class="info-label">Next Steps</div>
+        <div class="info-value">${analysis.structured.recommendation.next_steps}</div>
+      </div>
 
-          <div class="footer">
-            <div>Report generated by SonicScribe AI Medical Analysis System</div>
-            <div>This document contains confidential medical information</div>
-          </div>
-        </body>
-      </html>
+      ${
+        analysis.structured.notes
+          ? `
+        <div class="info-item" style="margin-top: 15px;">
+          <div class="info-label">Clinical Notes</div>
+          <div class="info-value">${analysis.structured.notes}</div>
+        </div>
+      `
+          : ""
+      }
+    </div>
+
+    <div class="section">
+      <div class="section-title">Source Information</div>
+      <div class="info-item">
+        <div class="info-label">Audio File</div>
+        <div class="info-value">${file.originalName}</div>
+      </div>
+      <div class="info-item" style="margin-top: 10px;">
+        <div class="info-label">Upload Date</div>
+        <div class="info-value">${new Date(file.uploadedAt).toLocaleString()}</div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <div class="disclaimer-title">⚠️ IMPORTANT MEDICAL DISCLAIMER</div>
+      <div class="disclaimer-text">
+        This AI-generated analysis is for informational purposes only and should not be considered as professional medical advice, diagnosis, or treatment. 
+        Always consult with qualified healthcare professionals for proper medical evaluation and care. ${analysis.triage.advice}
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>Report generated by SonicScribe AI Medical Analysis System</div>
+      <div>This document contains confidential medical information</div>
+    </div>
+  </body>
+</html>
+
     `
 
     printWindow.document.write(reportHTML)
