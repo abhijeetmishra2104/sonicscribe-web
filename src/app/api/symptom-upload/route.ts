@@ -17,41 +17,56 @@ export async function POST(req: NextRequest) {
     flaskFormData.append('audio_file', blob, audioFile.name);
   }
 
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/analyze-symptoms`, {
-      method: 'POST',
-      body: flaskFormData as any,
-    });
-
-    const data = await response.json();
-
-    if (data.response) {
-  const result =
-    typeof data.response === "string"
-      ? data.response.trim()
-      : JSON.stringify(data.response);
-
-  return NextResponse.json({
-    success: true,
-    result,
-    transcript: data.transcript || null,
+  // add just before your try/catch or replace the fetch block
+try {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/analyze-symptoms`, {
+    method: 'POST',
+    body: flaskFormData as any,
   });
-} else {
-  return NextResponse.json(
-    {
-      success: false,
-      error: "Flask returned no response.",
-    },
-    { status: 500 }
-  );
-}
 
+  // log status for debugging
+  console.log('Flask response status:', response.status, response.statusText);
 
-  } catch (error) {
-    console.error('Error contacting Flask app:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to reach Flask server',
-    }, { status: 500 });
+  const text = await response.text(); // always get raw body
+  // try to parse JSON if content-type is JSON
+  const contentType = response.headers.get('content-type') || '';
+  let data: any;
+  if (contentType.includes('application/json')) {
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error('Failed to parse JSON body from Flask:', e);
+      console.error('Flask body:', text);
+      return NextResponse.json({ success: false, error: 'Invalid JSON from Flask' }, { status: 500 });
+    }
+  } else {
+    // not JSON — log and return the raw text to help debugging
+    console.error('Flask returned non-JSON response:', text);
+    return NextResponse.json({ success: false, error: 'Flask returned non-JSON response', body: text }, { status: response.status });
   }
+
+  // existing handling
+  if (data.response) {
+    const result =
+      typeof data.response === "string"
+        ? data.response.trim()
+        : JSON.stringify(data.response);
+
+    return NextResponse.json({
+      success: true,
+      result,
+      transcript: data.transcript || null,
+    });
+  } else {
+    console.error('Flask JSON had no `response` field:', data);
+    return NextResponse.json({ success: false, error: "Flask returned no response.", body: data }, { status: 500 });
+  }
+
+} catch (error) {
+  console.error('Error contacting Flask app:', error);
+  return NextResponse.json({
+    success: false,
+    error: 'Failed to reach Flask server',
+  }, { status: 500 });
+}
 }
