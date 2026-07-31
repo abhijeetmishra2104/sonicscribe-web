@@ -115,9 +115,9 @@ export function Documentation() {
             <AlertDescription>{error}</AlertDescription>
           </Alert>
           <div className="mt-4 flex justify-center">
-             <Button onClick={resetState} variant="outline" className="text-black">
-                Try Again
-             </Button>
+            <Button onClick={resetState} variant="outline" className="text-black">
+              Try Again
+            </Button>
           </div>
         </div>
       )}
