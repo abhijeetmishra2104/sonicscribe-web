@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Input } from "@/components/ui/input-form"; // Adjust the import path as needed
+import { TopBar } from "@/components/Topbar";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white">
+      <TopBar/>
       <form onSubmit={handleSubmit} className="p-8 bg-gray-900 rounded-lg w-full max-w-sm space-y-4">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
 

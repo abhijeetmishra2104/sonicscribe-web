@@ -26,7 +26,7 @@ const Feature = ({
 }: FeatureProps) => {
   return (
     <WobbleCard containerClassName={`${bgColor} h-full ${className}`}>
-      <div id="features" className="flex flex-col h-full">
+      <div className="flex flex-col h-full">
         <div className="flex-1">
           {icon && <div className="mb-6 text-white/80">{icon}</div>}
           <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">{title}</h3>
@@ -54,7 +54,7 @@ export function FeatureCards() {
   return (
     <ContainerScroll
       titleComponent={
-        <h2 className="text-4xl sm:text-5xl font-bold font-inter leading-tight text-white">
+        <h2 id="features" className="text-4xl sm:text-5xl font-bold font-inter leading-tight text-white">
           Why Choose <span className="text-blue-400">SonicScribe</span>?
         </h2>
       }>

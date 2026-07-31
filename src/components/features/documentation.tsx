@@ -50,7 +50,7 @@ interface DocumentationResponse {
 }
 
 export function Documentation() {
-  const { loading, showAlert, analysis, startLoading, stopLoading, setLoading } = useLoading()
+  const { loading, showAlert, analysis, error, startLoading, stopLoading, resetState, setLoading, setError } = useLoading()
 
   async function handleUpload(files: File[]) {
     startLoading()
@@ -70,18 +70,24 @@ export function Documentation() {
       if (data.success) {
         // Store the entire response object as a JSON string
         stopLoading(JSON.stringify(data))
+      } else {
+        setLoading(false)
+        setError(data.error || "An unknown error occurred during upload.")
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Upload failed", err)
       setLoading(false)
+      setError(err.message || "Failed to reach the server. Please try again.")
     }
   }
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6 relative">
-      <div className="w-full max-w-2xl">
-        <FileUpload onChange={handleUpload} />
-      </div>
+      {!analysis && (
+        <div className="w-full max-w-2xl">
+          <FileUpload onChange={handleUpload} />
+        </div>
+      )}
 
       {showAlert && (
         <div className="mt-6 w-full max-w-2xl">
@@ -101,7 +107,31 @@ export function Documentation() {
         </Button>
       )}
 
-      {analysis && <StructuredAnalysisDisplay data={analysis} />}
+      {error && (
+        <div className="mt-6 w-full max-w-2xl">
+          <Alert variant="destructive" className="border-red-500 bg-red-950 text-red-100">
+            <IconSquareRoundedX className="h-5 w-5" />
+            <AlertTitle>Error Uploading File</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+          <div className="mt-4 flex justify-center">
+            <Button onClick={resetState} variant="outline" className="text-black">
+              Try Again
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {analysis && (
+        <div className="w-full max-w-4xl flex flex-col items-center">
+          <StructuredAnalysisDisplay data={analysis} />
+          <div className="mt-8 flex justify-center w-full pb-10">
+            <Button onClick={resetState} size="lg" className="bg-white text-black hover:bg-neutral-200">
+              Upload Another Audio
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
