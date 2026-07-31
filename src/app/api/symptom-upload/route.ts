@@ -45,7 +45,6 @@ try {
     return NextResponse.json({ success: false, error: 'Flask returned non-JSON response', body: text }, { status: response.status });
   }
 
-  // existing handling
   if (data.response) {
     const result =
       typeof data.response === "string"
@@ -57,10 +56,13 @@ try {
       result,
       transcript: data.transcript || null,
     });
-  } else {
-    console.error('Flask JSON had no `response` field:', data);
-    return NextResponse.json({ success: false, error: "Flask returned no response.", body: data }, { status: 500 });
-  }
+} else {
+    console.error('Flask returned an error payload:', data);
+    return NextResponse.json(
+      { success: false, error: data.error || "Flask returned no response.", body: data },
+      { status: response.status !== 200 ? response.status : 500 }
+    );
+}
 
 } catch (error) {
   console.error('Error contacting Flask app:', error);
