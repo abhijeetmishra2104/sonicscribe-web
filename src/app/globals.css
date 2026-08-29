@@ -1,6 +1,9 @@
+/* Remote @import must come first: Tailwind v4 inlines "tailwindcss" in place,
+   which would otherwise push this rule past thousands of declarations and make
+   the stylesheet invalid. */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Source+Sans+Pro:wght@400;600&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Source+Sans+Pro:wght@400;600&display=swap');
 
 /* Optional: fallback if using @custom-variant somewhere */
 @custom-variant dark (&);

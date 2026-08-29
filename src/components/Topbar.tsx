@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { AudioLines, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 import * as Avatar from '@radix-ui/react-avatar';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
@@ -12,6 +12,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import GetStartedButton  from '@/components/ui/get-started-button';
+import { Logo } from '@/components/ui/logo';
 
 export function TopBar() {
   const { data: session } = useSession();
@@ -39,13 +40,13 @@ export function TopBar() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="relative">
-              <AudioLines className="h-8 w-8 text-[#64ffda]" />
-              <div className="absolute inset-0 h-8 w-8 bg-gradient-to-r from-blue-400 to-purple-500 opacity-20 blur-sm" />
-            </div>
-            <span className="text-xl font-bold text-[#64ffda]"><Link href={"/"}>SonicScribe AI</Link></span>
-          </div>
+          <Link
+            href="/"
+            aria-label="SonicScribe AI — home"
+            className="text-blue-400 transition-colors hover:text-blue-300"
+          >
+            <Logo />
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
@@ -99,14 +100,12 @@ export function TopBar() {
             <SheetContent side="right" className="bg-black/95 border-gray-800">
               <div className="flex flex-col space-y-6 mt-8">
                 {/* Mobile Logo */}
-                <div className="flex items-center space-x-2 pb-6 border-b border-gray-800">
-                  <div className="relative">
-                    <AudioLines className="h-6 w-6 text-blue-400" />
-                    <div className="absolute inset-0 h-6 w-6 bg-gradient-to-r from-blue-400 to-purple-500 opacity-20 blur-sm" />
-                  </div>
-                  <span className="text-lg font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 bg-clip-text text-transparent">
-                    SonicScribe AI
-                  </span>
+                <div className="pb-6 border-b border-gray-800">
+                  <Logo
+                    className="text-blue-400"
+                    markClassName="h-6 w-6"
+                    wordmarkClassName="text-lg"
+                  />
                 </div>
 
                 {/* Mobile Navigation */}

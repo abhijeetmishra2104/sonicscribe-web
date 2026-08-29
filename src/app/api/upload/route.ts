@@ -3,6 +3,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { PrismaClient } from '@prisma/client';
 import { Readable } from 'stream';
 import type { UploadApiResponse } from 'cloudinary';
+import { requireAuth } from '@/lib/api-auth';
 
 const prisma = new PrismaClient();
 
@@ -15,6 +16,9 @@ cloudinary.config({
 
 export async function POST(req: NextRequest) {
   try {
+    const { response: unauthorized } = await requireAuth(req);
+    if (unauthorized) return unauthorized;
+
     const formData = await req.formData();
     const file = formData.get('file') as File;
 
@@ -51,29 +55,42 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Send URL to Flask backend
-    const flaskResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/analyze-note`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: uploadResult.secure_url }),
-    });
+    // Send URL to Flask backend. A connection failure here used to fall through
+    // to the outer catch and surface as a bare "Internal Server Error", which
+    // gave no hint that the analysis service was simply down.
+    let flaskResponse: Response;
+    try {
+      flaskResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/analyze-note`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: uploadResult.secure_url }),
+      });
+    } catch (e) {
+      console.error("❌ Could not reach the analysis service:", e);
+      return NextResponse.json({
+        error: `Could not reach the analysis service at ${process.env.NEXT_PUBLIC_API_BASE_URL}. Make sure it is running.`,
+      }, { status: 502 });
+    }
+
+    // Read the body once as text: calling .json() first and then .text() in the
+    // catch throws "Body is unusable", masking the real parse failure.
+    const rawText = await flaskResponse.text();
 
     let flaskData;
     try {
-      flaskData = await flaskResponse.json();
-    } catch (e) {
-      const rawText = await flaskResponse.text();
+      flaskData = JSON.parse(rawText);
+    } catch {
       console.error("❌ Failed to parse Flask JSON. Raw response:", rawText);
       return NextResponse.json({
-        error: "Invalid JSON from Flask",
-        raw: rawText,
-      }, { status: 500 });
+        error: `Analysis service returned a non-JSON response (HTTP ${flaskResponse.status}).`,
+        raw: rawText.slice(0, 500),
+      }, { status: 502 });
     }
 
-    if (!flaskData.success) {
+    if (!flaskResponse.ok || !flaskData.success) {
       return NextResponse.json({
-        error: flaskData.error || "Flask backend failed",
-      }, { status: 500 });
+        error: flaskData.error || `Analysis service failed (HTTP ${flaskResponse.status}).`,
+      }, { status: 502 });
     }
 
     // Extract structured response

@@ -19,10 +19,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    // Generate JWT (if not using NextAuth)
-    const token = signJwt({ id: user.id, email: user.email });
+    // Generate JWT (if not using NextAuth) — used by the React Native app
+    const token = signJwt({ id: user.id, email: user.email, name: user.name }, "30d");
 
-    return NextResponse.json({ token, user }, { status: 200 });
+    // Never send the password hash back to the client
+    const safeUser = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+    };
+
+    return NextResponse.json({ token, user: safeUser }, { status: 200 });
   } catch (err) {
     console.error("Signin route error:", err);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

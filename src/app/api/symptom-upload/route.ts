@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function POST(req: NextRequest) {
+  const { response: unauthorized } = await requireAuth(req);
+  if (unauthorized) return unauthorized;
+
   const formData = await req.formData();
   const textInput = formData.get('text_input') as string | null;
   const audioFile = formData.get('audio_file') as File | null;

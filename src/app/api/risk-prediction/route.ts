@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function POST(req: NextRequest) {
   try {
+    const { response: unauthorized } = await requireAuth(req);
+    if (unauthorized) return unauthorized;
+
     const body = await req.json();
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/predict`, {

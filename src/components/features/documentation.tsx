@@ -7,6 +7,7 @@ import { IconSquareRoundedX } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { StructuredAnalysisDisplay } from "@/components/structured-analysis-display"
 import { useLoading } from "@/lib/use-loading"
+import { useState } from "react"
 
 const loadingStates = [
   { text: "Reading audio file..." },
@@ -51,6 +52,15 @@ interface DocumentationResponse {
 
 export function Documentation() {
   const { loading, showAlert, analysis, error, startLoading, stopLoading, resetState, setLoading, setError } = useLoading()
+  // FileUpload keeps the picked file in its own state and in the native input.
+  // Bumping this key remounts it on reset so a retry starts from a clean picker
+  // instead of showing the previous file's chip.
+  const [uploadKey, setUploadKey] = useState(0)
+
+  const handleReset = () => {
+    resetState()
+    setUploadKey((k) => k + 1)
+  }
 
   async function handleUpload(files: File[]) {
     startLoading()
@@ -85,7 +95,7 @@ export function Documentation() {
     <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6 relative">
       {!analysis && (
         <div className="w-full max-w-2xl">
-          <FileUpload onChange={handleUpload} />
+          <FileUpload key={uploadKey} onChange={handleUpload} />
         </div>
       )}
 
@@ -115,7 +125,7 @@ export function Documentation() {
             <AlertDescription>{error}</AlertDescription>
           </Alert>
           <div className="mt-4 flex justify-center">
-            <Button onClick={resetState} variant="outline" className="text-black">
+            <Button onClick={handleReset} variant="outline" className="text-white">
               Try Again
             </Button>
           </div>
@@ -126,7 +136,7 @@ export function Documentation() {
         <div className="w-full max-w-4xl flex flex-col items-center">
           <StructuredAnalysisDisplay data={analysis} />
           <div className="mt-8 flex justify-center w-full pb-10">
-            <Button onClick={resetState} size="lg" className="bg-white text-black hover:bg-neutral-200">
+            <Button onClick={handleReset} size="lg" className="bg-white text-black hover:bg-neutral-200">
               Upload Another Audio
             </Button>
           </div>
