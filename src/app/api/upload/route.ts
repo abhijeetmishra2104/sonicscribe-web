@@ -93,7 +93,15 @@ export async function POST(req: NextRequest) {
       }, { status: 502 });
     }
 
-    // Extract structured response
+    // Extract structured response. Guard the destructure: a success:true payload
+    // with no `analysis` would throw here and be swallowed by the outer catch as
+    // a bare "Internal Server Error", hiding that the fault is upstream.
+    if (!flaskData.analysis) {
+      return NextResponse.json({
+        error: "Analysis service reported success but returned no analysis payload.",
+      }, { status: 502 });
+    }
+
     const { transcript, structured, triage } = flaskData.analysis;
 
     return NextResponse.json({
