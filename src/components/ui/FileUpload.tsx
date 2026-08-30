@@ -34,7 +34,9 @@ export const FileUpload = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (newFiles: File[]) => {
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    // The dropzone is `multiple: false`, so a new pick replaces the previous
+    // one. Appending instead stacked a chip per attempt after a failed upload.
+    setFiles(newFiles);
     onChange && onChange(newFiles);
   };
 
@@ -62,7 +64,13 @@ export const FileUpload = ({
           ref={fileInputRef}
           id="file-upload-handle"
           type="file"
-          onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
+          onChange={(e) => {
+            handleFileChange(Array.from(e.target.files || []));
+            // Clear the input so re-picking the SAME file still fires `change`.
+            // Without this, retrying a failed upload with the same audio is a
+            // dead end -- the picker closes and nothing happens.
+            e.target.value = "";
+          }}
           className="hidden"
         />
         <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,white,transparent)]">
